@@ -51,8 +51,25 @@
 }
 
 .list {
-  width: 80%;
+  width: 100%;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   padding: 10px;
+}
+
+.title{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Itens nos extremos */
+  align-items: center; /* Alinha verticalmente */
+  padding: 10px; /* Espaçamento interno opcional */
+}
+
+.content{
+  width: 80%;
 }

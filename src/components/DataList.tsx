@@ -13,46 +13,46 @@ export const DataList = <T extends { id: string }>({
   onDelete,
 }: DataListProps<T>) => {
   return (
-    <div className="list">
-      <Table.Root>
-        <Table.Header>
-          <Table.Row>
-            {columns.map((col, index) => (
-              <Table.ColumnHeaderCell key={index}>
-                {col.header}
-              </Table.ColumnHeaderCell>
-            ))}
-            <Table.ColumnHeaderCell>Ações</Table.ColumnHeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {data.map((item) => (
-            <Table.Row key={item.id}>
-              {columns.map((col, index) => {
-                const value =
-                  typeof col.accessor === 'function'
-                    ? col.accessor(item)
-                    : item[col.accessor];
-                return (
-                  <Table.RowHeaderCell key={index}>
-                    {String(value)}
-                  </Table.RowHeaderCell>
-                );
-              })}
-              <Table.Cell>
-                <Button
-                  variant="surface"
-                  onClick={() => onDelete(item.id)}
-                  color="crimson"
-                >
-                  <Trash />
-                  Delete
-                </Button>
-              </Table.Cell>
-            </Table.Row>
+
+    <Table.Root variant="surface">
+      <Table.Header>
+        <Table.Row>
+          {columns.map((col, index) => (
+            <Table.ColumnHeaderCell key={index}>
+              {col.header}
+            </Table.ColumnHeaderCell>
           ))}
-        </Table.Body>
-      </Table.Root>
-    </div>
+          <Table.ColumnHeaderCell>Ações</Table.ColumnHeaderCell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {data.map((item) => (
+          <Table.Row key={item.id}>
+            {columns.map((col, index) => {
+              const value =
+                typeof col.accessor === 'function'
+                  ? col.accessor(item)
+                  : item[col.accessor];
+              return (
+                <Table.RowHeaderCell key={index}>
+                  {String(value)}
+                </Table.RowHeaderCell>
+              );
+            })}
+            <Table.Cell>
+              <Button
+                variant="surface"
+                onClick={() => onDelete(item.id)}
+                color="crimson"
+              >
+                <Trash />
+                Delete
+              </Button>
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+
   );
 };

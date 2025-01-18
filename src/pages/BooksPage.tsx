@@ -9,8 +9,6 @@ import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 
-// Tipos inferidos do esquema
-
 
 export const BooksPage: React.FC = () => {
   const { books, addBook, authors, deleteBook } = useAppContext();
@@ -42,6 +40,18 @@ export const BooksPage: React.FC = () => {
   };
 
   const isFormValid = !errors.title && !errors.authorId;
+
+  const renderItemDetails = (book: {
+    id: string;
+    title: string;
+    authorId: string;
+  }) => {
+    const author = authors.find((author) => author.id === book.authorId);
+    return {
+      Título: book.title,
+      Autor: author ? author.name : 'Desconhecido',
+    };
+  };
 
   return (
     <div className="page">
@@ -128,6 +138,7 @@ export const BooksPage: React.FC = () => {
             },
           ]}
           onDelete={deleteBook}
+          renderItemDetails={renderItemDetails}
         />
       </div>
     </div>

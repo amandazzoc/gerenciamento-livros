@@ -9,7 +9,6 @@ import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 
-
 export const AuthorsPage: React.FC = () => {
   const { addAuthor, authors, deleteAuthor } = useAppContext();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -18,7 +17,7 @@ export const AuthorsPage: React.FC = () => {
     name: z
       .string()
       .min(3, 'O nome deve ter pelo menos 3 caracteres')
-      .regex(/^[a-zA-Z\s]+$/, 'O título deve conter apenas letras e espaços'),
+      .regex(/^[a-zA-Z\s]+$/, 'O nome deve conter apenas letras e espaços'),
   });
 
   type AuthorFormInputs = z.infer<typeof authorSchema>;
@@ -36,6 +35,12 @@ export const AuthorsPage: React.FC = () => {
     addAuthor({ id: uuidv4(), name: data.name });
     reset(); // Limpa o formulário após submissão
     setModalOpen(false); // Fecha o modal apenas se os dados forem válidos
+  };
+
+  const renderItemDetails = (author: { id: string; name: string }) => {
+    return {
+      Nome: author.name,
+    };
   };
 
   return (
@@ -95,6 +100,7 @@ export const AuthorsPage: React.FC = () => {
           data={authors}
           columns={[{ header: 'Autor', accessor: 'name' }]}
           onDelete={deleteAuthor}
+          renderItemDetails={renderItemDetails}
         />
       </div>
     </div>

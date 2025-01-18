@@ -1,23 +1,31 @@
-import { Button, Table, Dialog } from '@radix-ui/themes';
-import { Trash } from 'lucide-react';
+import { Button, Table, Flex } from '@radix-ui/themes';
+import { Trash, Eye } from 'lucide-react';
 import { useState } from 'react';
+import { DetailsModal } from './DetailsModal';
+import { ConfirmDeleteModal } from './ConfirmModal'; 
 
 interface DataListProps<T> {
   data: T[];
   columns: { header: string; accessor: keyof T | ((item: T) => any) }[];
   onDelete: (id: string) => void;
+  renderItemDetails: (item: T) => { [key: string]: string | number };
 }
 
 export const DataList = <T extends { id: string }>({
   data,
   columns,
   onDelete,
+  renderItemDetails,
 }: DataListProps<T>) => {
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
+  const [isDetailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // Estado para controlar o modal de exclusão
 
   const handleDelete = () => {
     if (selectedItem) {
-      onDelete(selectedItem.id); 
+      onDelete(selectedItem.id);
+      setSelectedItem(null);
+      setDeleteModalOpen(false); // Fecha o modal de exclusão após confirmação
     }
   };
 
@@ -49,51 +57,53 @@ export const DataList = <T extends { id: string }>({
                 );
               })}
               <Table.Cell>
-                <Dialog.Root>
-                  <Dialog.Trigger>
-                    <Button
-                      variant="surface"
-                      color="crimson"
-                      onClick={() => {
-                        setSelectedItem(item); // Define o item a ser deletado
-                      }}
-                    >
-                      <Trash />
-                      Delete
-                    </Button>
-                  </Dialog.Trigger>
-                  <Dialog.Content maxWidth="400px">
-                    <Dialog.Title>Confirmar Exclusão</Dialog.Title>
-                    <Dialog.Description size="2" mb="4">
-                      Tem certeza que deseja excluir o item?
-                    </Dialog.Description>
+                <Flex gap="2">
+                  <Button
+                    variant="surface"
+                    color="crimson"
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setDeleteModalOpen(true); 
+                    }}
+                  >
+                    <Trash />
+                  </Button>
 
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        gap: '10px',
-                      }}
-                    >
-                      <Dialog.Close>
-                        <Button variant="soft" color="gray">
-                          Cancelar
-                        </Button>
-                      </Dialog.Close>
-                      <Dialog.Close>
-                        <Button color="red" onClick={handleDelete}>
-                          Confirmar
-                        </Button>
-                      </Dialog.Close>
-                    </div>
-                  </Dialog.Content>
-                </Dialog.Root>
+                  {/* Botão para mostrar os detalhes */}
+                  <Button
+                    variant="surface"
+                    color="indigo"
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setDetailsModalOpen(true); 
+                    }}
+                  >
+                    <Eye />
+                  </Button>
+                </Flex>
               </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table.Root>
 
+      {/* Exibindo o modal de detalhes com as informações do item selecionado */}
+      {selectedItem && (
+        <DetailsModal
+          isOpen={isDetailsModalOpen}
+          onClose={() => setDetailsModalOpen(false)}
+          data={renderItemDetails(selectedItem)}
+        />
+      )}
+
+      {/* Exibindo o modal de confirmação de exclusão */}
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Confirmar Exclusão"
+        description="Tem certeza que deseja excluir o item?"
+      />
     </>
   );
 };

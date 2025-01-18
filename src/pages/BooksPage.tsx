@@ -2,7 +2,6 @@ import { Button, Dialog, Flex, TextField } from '@radix-ui/themes';
 import { DataList } from '../components/DataList';
 import { useAppContext } from '../context/AppContext';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -12,7 +11,6 @@ import { z } from 'zod';
 
 export const BooksPage: React.FC = () => {
   const { books, addBook, authors, deleteBook } = useAppContext();
-  const [isModalOpen, setModalOpen] = useState(false);
 
   const bookSchema = z.object({
     title: z
@@ -36,7 +34,6 @@ export const BooksPage: React.FC = () => {
   const onSubmit = (data: BookFormInputs) => {
     addBook({ id: uuidv4(), title: data.title, authorId: data.authorId });
     reset(); // Limpa o formulário após submissão
-    setModalOpen(false); // Fecha o modal apenas se os dados forem válidos
   };
 
   const isFormValid = !errors.title && !errors.authorId;
@@ -57,12 +54,11 @@ export const BooksPage: React.FC = () => {
     <div className="page">
       <div className="content">
         <div className="header">
-          <Dialog.Root open={isModalOpen} onOpenChange={setModalOpen}>
+          <Dialog.Root>
             <Dialog.Trigger>
               <Button
                 color="indigo"
                 variant="surface"
-                onClick={() => setModalOpen(true)}
               >
                 <Plus /> Novo Livro
               </Button>

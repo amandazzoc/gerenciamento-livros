@@ -2,7 +2,6 @@ import { Button, Dialog, Flex, TextField } from '@radix-ui/themes';
 import { Plus } from 'lucide-react';
 import { DataList } from '../components/DataList';
 import { useAppContext } from '../context/AppContext';
-import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -11,7 +10,6 @@ import { z } from 'zod';
 
 export const AuthorsPage: React.FC = () => {
   const { addAuthor, authors, deleteAuthor } = useAppContext();
-  const [isModalOpen, setModalOpen] = useState(false);
 
   const authorSchema = z.object({
     name: z
@@ -34,7 +32,6 @@ export const AuthorsPage: React.FC = () => {
   const onSubmit = (data: AuthorFormInputs) => {
     addAuthor({ id: uuidv4(), name: data.name });
     reset(); // Limpa o formulário após submissão
-    setModalOpen(false); // Fecha o modal apenas se os dados forem válidos
   };
 
   const renderItemDetails = (author: { id: string; name: string }) => {
@@ -47,12 +44,11 @@ export const AuthorsPage: React.FC = () => {
     <div className="page">
       <div className="content">
         <div className="header">
-          <Dialog.Root open={isModalOpen} onOpenChange={setModalOpen}>
+          <Dialog.Root>
             <Dialog.Trigger>
               <Button
                 color="indigo"
                 variant="surface"
-                onClick={() => setModalOpen(true)}
               >
                 <Plus /> Novo Autor
               </Button>

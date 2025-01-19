@@ -1,31 +1,26 @@
 import { Button, Table, Flex } from '@radix-ui/themes';
-import { Trash, Eye } from 'lucide-react';
+import { Trash, Eye, Pen } from 'lucide-react';
 import { useState } from 'react';
 import { DetailsModal } from './DetailsModal';
-import { ConfirmDeleteModal } from './ConfirmModal'; 
-
-interface DataListProps<T> {
-  data: T[];
-  columns: { header: string; accessor: keyof T | ((item: T) => any) }[];
-  onDelete: (id: string) => void;
-  renderItemDetails: (item: T) => { [key: string]: string | number };
-}
+import { ConfirmDeleteModal } from './ConfirmModal';
+import { DataListProps } from '../types/DataListProps';
 
 export const DataList = <T extends { id: string }>({
   data,
   columns,
   onDelete,
+  onEdit, // Adiciona a prop onEdit
   renderItemDetails,
-}: DataListProps<T>) => {
+}: DataListProps<T>): JSX.Element => {
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [isDetailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // Estado para controlar o modal de exclusão
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleDelete = () => {
     if (selectedItem) {
       onDelete(selectedItem.id);
       setSelectedItem(null);
-      setDeleteModalOpen(false); // Fecha o modal de exclusão após confirmação
+      setDeleteModalOpen(false);
     }
   };
 
@@ -58,12 +53,13 @@ export const DataList = <T extends { id: string }>({
               })}
               <Table.Cell>
                 <Flex gap="2">
+                  {/* Botão de exclusão */}
                   <Button
                     variant="surface"
                     color="crimson"
                     onClick={() => {
                       setSelectedItem(item);
-                      setDeleteModalOpen(true); 
+                      setDeleteModalOpen(true);
                     }}
                   >
                     <Trash />
@@ -75,10 +71,23 @@ export const DataList = <T extends { id: string }>({
                     color="indigo"
                     onClick={() => {
                       setSelectedItem(item);
-                      setDetailsModalOpen(true); 
+                      setDetailsModalOpen(true);
                     }}
                   >
                     <Eye />
+                  </Button>
+
+                  {/* Botão para edição */}
+                  <Button
+                    variant="surface"
+                    color="green"
+                    onClick={() => {
+                      if (onEdit) {
+                        onEdit(item); // Chama a função onEdit com o item selecionado
+                      }
+                    }}
+                  >
+                    <Pen />
                   </Button>
                 </Flex>
               </Table.Cell>
@@ -87,7 +96,7 @@ export const DataList = <T extends { id: string }>({
         </Table.Body>
       </Table.Root>
 
-      {/* Exibindo o modal de detalhes com as informações do item selecionado */}
+      {/* Modal de detalhes */}
       {selectedItem && (
         <DetailsModal
           isOpen={isDetailsModalOpen}
@@ -96,7 +105,7 @@ export const DataList = <T extends { id: string }>({
         />
       )}
 
-      {/* Exibindo o modal de confirmação de exclusão */}
+      {/* Modal de confirmação de exclusão */}
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}

@@ -1,12 +1,5 @@
 import { Button, Dialog } from '@radix-ui/themes';
-
-interface ConfirmDeleteModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  description: string;
-}
+import { ConfirmDeleteModalProps } from '../types/ConfirmDeleteModalProps';
 
 export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   isOpen,
@@ -17,29 +10,23 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
 }) => {
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
-      <div>
-        <Dialog.Content maxWidth="400px">
-          <Dialog.Title>{title}</Dialog.Title>
-          <Dialog.Description size="2" mb="4">
-            {description}
-          </Dialog.Description>
+      <Dialog.Content maxWidth="400px">
+        <Dialog.Title>{title}</Dialog.Title>
+        <Dialog.Description size="2" mb="4">
+          {description}
+        </Dialog.Description>
 
-          <div
-            style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}
-          >
-            <Dialog.Close>
-              <Button variant="soft" color="gray">
-                Cancelar
-              </Button>
-            </Dialog.Close>
-            <Dialog.Close>
-              <Button color="red" onClick={onConfirm}>
-                Confirmar
-              </Button>
-            </Dialog.Close>
-          </div>
-        </Dialog.Content>
-      </div>
+        <div
+          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}
+        >
+          <Button variant="soft" color="gray" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button color="red" onClick={onConfirm}>
+            Confirmar
+          </Button>
+        </div>
+      </Dialog.Content>
     </Dialog.Root>
   );
 };

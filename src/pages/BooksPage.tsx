@@ -1,27 +1,25 @@
 import { Button, Dialog, Flex, TextField } from '@radix-ui/themes';
 import { DataList } from '../components/DataList';
-import { useAppContext } from '../context/AppContext';
 import { Plus } from 'lucide-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
-
+import { useAppContext } from '../hooks/useAppContext';
+import { useState } from 'react';
+import { EditModal } from '../components/EditModal';
 
 export const BooksPage: React.FC = () => {
-  const { books, addBook, authors, deleteBook } = useAppContext();
+  const { books, addBook, authors, deleteBook, updateBook } = useAppContext();
 
   const bookSchema = z.object({
-    title: z
-      .string()
-      .min(3, 'O título do livro deve ter pelo menos 3 letras'),
+    title: z.string().min(3, 'O título do livro deve ter pelo menos 3 letras'),
     authorId: z.string().min(1, 'Selecione um autor'),
   });
 
   type BookFormInputs = z.infer<typeof bookSchema>;
 
-  // useForm configurado com o resolver do Zod
   const {
     register,
     handleSubmit,
@@ -31,12 +29,36 @@ export const BooksPage: React.FC = () => {
     resolver: zodResolver(bookSchema),
   });
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  type BookWithId = BookFormInputs & { id: string };
+  const [currentBook, setCurrentBook] = useState<BookWithId | null>(null);
+
   const onSubmit = (data: BookFormInputs) => {
     addBook({ id: uuidv4(), title: data.title, authorId: data.authorId });
-    reset(); // Limpa o formulário após submissão
+    reset();
   };
 
   const isFormValid = !errors.title && !errors.authorId;
+
+  const handleEdit = (book: {
+    id: string;
+    title: string;
+    authorId: string;
+  }) => {
+    setCurrentBook(book);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSubmit = (updatedData: BookFormInputs) => {
+    if (currentBook) {
+      updateBook({
+        id: currentBook.id,
+        ...updatedData,
+      });
+    }
+    setIsEditModalOpen(false);
+    setCurrentBook(null);
+  };
 
   const renderItemDetails = (book: {
     id: string;
@@ -56,10 +78,7 @@ export const BooksPage: React.FC = () => {
         <div className="header">
           <Dialog.Root>
             <Dialog.Trigger>
-              <Button
-                color="indigo"
-                variant="surface"
-              >
+              <Button color="indigo" variant="surface">
                 <Plus /> Novo Livro
               </Button>
             </Dialog.Trigger>
@@ -134,11 +153,21 @@ export const BooksPage: React.FC = () => {
             },
           ]}
           onDelete={deleteBook}
+          onEdit={handleEdit} // Passa o método de edição para DataList
           renderItemDetails={renderItemDetails}
         />
+
+        {currentBook && (
+          <EditModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            onEdit={handleEditSubmit}
+            initialData={currentBook}
+            schema={bookSchema}
+            fields={['title', 'authorId']}
+          />
+        )}
       </div>
     </div>
   );
-}
-  
-  
+};

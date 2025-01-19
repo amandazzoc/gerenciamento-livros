@@ -1,10 +1,5 @@
 import { Dialog, Button, Flex } from '@radix-ui/themes';
-
-interface DetailsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  data: { [key: string]: string | number }; // Dados que você quer exibir
-}
+import { DetailsModalProps } from '../types/DetailsModalProps';
 
 export const DetailsModal: React.FC<DetailsModalProps> = ({
   isOpen,

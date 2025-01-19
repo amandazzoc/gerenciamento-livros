@@ -1,29 +1,10 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { AppContextType } from '../types/AppContextType';
+import { Author } from '../types/Author';
+import { Book } from '../types/Book';
 
-export interface Author {
-  id: string;
-  name: string;
-}
-
-interface Book {
-  id: string;
-  title: string;
-  authorId: string;
-}
-
-interface AppContextType {
-  authors: Author[];
-  books: Book[];
-  addAuthor: (author: Author) => void;
-  addBook: (book: Book) => void;
-  deleteAuthor: (id: string) => void;
-  deleteBook: (id: string) => void;
-  updateAuthor: (author: Author) => void;
-  updateBook: (book: Book) => void;
-}
-
-const AppContext = createContext<AppContextType | undefined>(undefined);
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -58,9 +39,3 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useAppContext = () => {
-  const context = useContext(AppContext);
-  if (!context)
-    throw new Error('useAppContext must be used within an AppProvider');
-  return context;
-};

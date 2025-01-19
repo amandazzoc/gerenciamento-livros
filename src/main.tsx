@@ -9,6 +9,10 @@ import Books from './routes/Books';
 import ErrorPage from './routes/ErrorPage';
 import Home from './routes/Home';
 
+/**
+ * Cria um roteador para a aplicação com as rotas definidas.
+ */
+
 const router = createBrowserRouter([
   {
     path: '/',

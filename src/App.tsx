@@ -8,14 +8,20 @@ import Navbar from './components/Navbar';
 import { AppProvider } from './context/AppContext';
 
 export default function App() {
+
+  
+
   return (
     <Theme>
       <AppProvider>
         <div className="App">
           <div className="navbar-style">
-            <Navbar />
+            <button className="menu-btn">☰</button>
+            <Navbar/>
           </div>
-          <Outlet />
+          <div className="main-content">
+            <Outlet />
+          </div>
         </div>
       </AppProvider>
     </Theme>

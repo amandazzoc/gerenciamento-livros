@@ -80,6 +80,7 @@ export const EditModal = <T extends Record<string, any>>({
                   />
                 ) : (
                   <select
+                    className="styled-select"
                     id={fieldId}
                     name={key}
                     value={formData[key as keyof T] as string}

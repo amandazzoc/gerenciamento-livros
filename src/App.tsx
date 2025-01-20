@@ -10,7 +10,10 @@ export default function App() {
   return (
     <Theme>
       <div className="App">
-        <Navbar />
+        
+        <div className="navbar-style">
+          <Navbar />
+        </div>
         <Outlet />
       </div>
     </Theme>

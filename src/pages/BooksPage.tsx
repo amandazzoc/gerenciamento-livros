@@ -93,10 +93,10 @@ export const BooksPage: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Flex direction="column" gap="3">
                     <label>
-                      <p>Titulo</p>
+                      <p>Título</p>
                       <TextField.Root
                         {...register('title')}
-                        placeholder="Titulo do Livro"
+                        placeholder="Título do Livro"
                         aria-invalid={!!errors.title}
                       ></TextField.Root>
                       {errors.title && (
@@ -109,7 +109,7 @@ export const BooksPage: React.FC = () => {
                         {...register('authorId')}
                         className="styled-select"
                       >
-                        <option value="">Select Author</option>
+                        <option value="">Selecione um autor</option>
                         {authors.map((author) => (
                           <option key={author.id} value={author.id}>
                             {author.name}
@@ -149,7 +149,7 @@ export const BooksPage: React.FC = () => {
               header: 'Autor',
               accessor: (book) =>
                 authors.find((author) => author.id === book.authorId)?.name ||
-                'Unknown',
+                'Desconhecido',
             },
           ]}
           onDelete={deleteBook}
@@ -158,13 +158,26 @@ export const BooksPage: React.FC = () => {
         />
 
         {currentBook && (
-          <EditModal
+          <EditModal<BookFormInputs>
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}
             onEdit={handleEditSubmit}
-            initialData={currentBook}
-            schema={bookSchema}
-            fields={['title', 'authorId']}
+            initialData={currentBook as BookFormInputs}
+            schema={bookSchema} // Passa o schema
+            fields={{
+              title: {
+                type: 'text',
+                label: 'Título',
+              },
+              authorId: {
+                type: 'select',
+                label: 'Autor',
+                options: authors.map((author) => ({
+                  value: author.id,
+                  label: author.name,
+                })),
+              },
+            }}
           />
         )}
       </div>

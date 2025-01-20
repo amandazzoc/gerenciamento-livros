@@ -10,15 +10,11 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Content maxWidth="450px">
         <Dialog.Title>Detalhes</Dialog.Title>
-        <Dialog.Description size="2" mb="4">
-          <div>
-            {Object.keys(data).map((key) => (
-              <div key={key}>
-                <strong>{key}:</strong> {data[key]}
-              </div>
-            ))}
-          </div>
-        </Dialog.Description>
+        {Object.keys(data).map((key) => (
+          <Dialog.Description key={key} size="2" mb="2">
+            <strong>{key}:</strong> {data[key]}
+          </Dialog.Description>
+        ))}
 
         <Flex gap="3" mt="4" justify="end">
           <Dialog.Close>

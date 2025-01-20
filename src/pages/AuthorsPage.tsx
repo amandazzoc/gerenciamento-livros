@@ -15,7 +15,7 @@ export const AuthorsPage: React.FC = () => {
   const { addAuthor, authors, deleteAuthor, updateAuthor } = useAppContext();
 
   const authorSchema = z.object({
-    id: z.string().uuid(),
+    id: z.string().uuid().optional(),
     name: z
       .string()
       .min(3, 'O nome deve ter pelo menos 3 caracteres')
@@ -25,9 +25,9 @@ export const AuthorsPage: React.FC = () => {
   type AuthorFormInputs = z.infer<typeof authorSchema>;
 
   const [isEditModalOpen, setEditModalOpen] = useState(false);
-  const [selectedAuthor, setSelectedAuthor] = useState<
-    (AuthorFormInputs & { id: string }) | null
-  >(null);
+  const [selectedAuthor, setSelectedAuthor] = useState<AuthorFormInputs | null>(
+    null,
+  );
 
   const {
     register,
@@ -43,9 +43,12 @@ export const AuthorsPage: React.FC = () => {
     reset(); // Limpa o formulário após submissão
   };
 
-  const handleEdit = (data: AuthorFormInputs & { id: string }) => {
-    updateAuthor({ id: data.id, name: data.name });
+  const handleEdit = (updatedData: AuthorFormInputs) => {
+    if (selectedAuthor?.id) {
+      updateAuthor({ id: selectedAuthor.id, name: updatedData.name });
+    }
     setEditModalOpen(false); // Fecha o modal após a edição
+    setSelectedAuthor(null);
   };
 
   const renderItemDetails = (author: { id: string; name: string }) => {
@@ -73,17 +76,19 @@ export const AuthorsPage: React.FC = () => {
 
               <Flex direction="column" gap="3">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <label>
+                  <label htmlFor="author-name">
                     <p>Nome</p>
-                    <TextField.Root
-                      {...register('name')}
-                      placeholder="Nome do Autor"
-                      aria-invalid={!!errors.name}
-                    ></TextField.Root>
-                    {errors.name && (
-                      <p style={{ color: 'red' }}>{errors.name.message}</p>
-                    )}
                   </label>
+                  <TextField.Root
+                    id="author-name"
+                    {...register('name')}
+                    placeholder="Nome do Autor"
+                    aria-invalid={!!errors.name}
+                    autoComplete="name"
+                  />
+                  {errors.name && (
+                    <p style={{ color: 'red' }}>{errors.name.message}</p>
+                  )}
 
                   <Flex gap="3" mt="4" justify="end">
                     <Dialog.Close>
@@ -121,7 +126,15 @@ export const AuthorsPage: React.FC = () => {
             onEdit={handleEdit}
             initialData={selectedAuthor}
             schema={authorSchema}
-            fields={['name']}
+            fields={{
+              id: {
+                type: 'hidden',
+              },
+              name: {
+                type: 'text',
+                label: 'Nome',
+              },
+            }}
           />
         )}
       </div>

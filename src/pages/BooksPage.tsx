@@ -73,8 +73,7 @@ export const BooksPage: React.FC = () => {
   };
 
   return (
-    <div className="page">
-      <div className="content">
+    <>
         <div className="header">
           <Dialog.Root>
             <Dialog.Trigger>
@@ -179,8 +178,7 @@ export const BooksPage: React.FC = () => {
               },
             }}
           />
-        )}
-      </div>
-    </div>
+        )} 
+    </>
   );
 };

@@ -58,86 +58,84 @@ export const AuthorsPage: React.FC = () => {
   };
 
   return (
-    <div className="page">
-      <div className="content">
-        <div className="header">
-          <Dialog.Root>
-            <Dialog.Trigger>
-              <Button color="indigo" variant="surface">
-                <Plus /> Novo Autor
-              </Button>
-            </Dialog.Trigger>
+    <>
+      <div className="header">
+        <Dialog.Root>
+          <Dialog.Trigger>
+            <Button color="indigo" variant="surface">
+              <Plus /> Novo Autor
+            </Button>
+          </Dialog.Trigger>
 
-            <Dialog.Content maxWidth="450px">
-              <Dialog.Title>Cadastrar Autor</Dialog.Title>
-              <Dialog.Description size="2" mb="4">
-                Preencha os campos abaixo para cadastrar um novo autor.
-              </Dialog.Description>
+          <Dialog.Content maxWidth="450px">
+            <Dialog.Title>Cadastrar Autor</Dialog.Title>
+            <Dialog.Description size="2" mb="4">
+              Preencha os campos abaixo para cadastrar um novo autor.
+            </Dialog.Description>
 
-              <Flex direction="column" gap="3">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <label htmlFor="author-name">
-                    <p>Nome</p>
-                  </label>
-                  <TextField.Root
-                    id="author-name"
-                    {...register('name')}
-                    placeholder="Nome do Autor"
-                    aria-invalid={!!errors.name}
-                    autoComplete="name"
-                  />
-                  {errors.name && (
-                    <p style={{ color: 'red' }}>{errors.name.message}</p>
-                  )}
+            <Flex direction="column" gap="3">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <label htmlFor="author-name">
+                  <p>Nome</p>
+                </label>
+                <TextField.Root
+                  id="author-name"
+                  {...register('name')}
+                  placeholder="Nome do Autor"
+                  aria-invalid={!!errors.name}
+                  autoComplete="name"
+                />
+                {errors.name && (
+                  <p style={{ color: 'red' }}>{errors.name.message}</p>
+                )}
 
-                  <Flex gap="3" mt="4" justify="end">
-                    <Dialog.Close>
-                      <Button variant="soft" color="gray">
-                        Cancelar
-                      </Button>
-                    </Dialog.Close>
-                    <Dialog.Close>
-                      <Button type="submit" disabled={!!errors.name}>
-                        Salvar
-                      </Button>
-                    </Dialog.Close>
-                  </Flex>
-                </form>
-              </Flex>
-            </Dialog.Content>
-          </Dialog.Root>
-        </div>
+                <Flex gap="3" mt="4" justify="end">
+                  <Dialog.Close>
+                    <Button variant="soft" color="gray">
+                      Cancelar
+                    </Button>
+                  </Dialog.Close>
+                  <Dialog.Close>
+                    <Button type="submit" disabled={!!errors.name}>
+                      Salvar
+                    </Button>
+                  </Dialog.Close>
+                </Flex>
+              </form>
+            </Flex>
+          </Dialog.Content>
+        </Dialog.Root>
+      </div>
 
-        <DataList
-          data={authors}
-          columns={[{ header: 'Autor', accessor: 'name' }]}
-          onDelete={deleteAuthor}
-          renderItemDetails={renderItemDetails}
-          onEdit={(author) => {
-            setSelectedAuthor(author);
-            setEditModalOpen(true);
+      <DataList
+        data={authors}
+        columns={[{ header: 'Autor', accessor: 'name' }]}
+        onDelete={deleteAuthor}
+        renderItemDetails={renderItemDetails}
+        onEdit={(author) => {
+          setSelectedAuthor(author);
+          setEditModalOpen(true);
+        }}
+      />
+
+      {selectedAuthor && (
+        <EditModal
+          isOpen={isEditModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          onEdit={handleEdit}
+          initialData={selectedAuthor}
+          schema={authorSchema}
+          fields={{
+            id: {
+              type: 'hidden',
+            },
+            name: {
+              type: 'text',
+              label: 'Nome',
+            },
           }}
         />
-
-        {selectedAuthor && (
-          <EditModal
-            isOpen={isEditModalOpen}
-            onClose={() => setEditModalOpen(false)}
-            onEdit={handleEdit}
-            initialData={selectedAuthor}
-            schema={authorSchema}
-            fields={{
-              id: {
-                type: 'hidden',
-              },
-              name: {
-                type: 'text',
-                label: 'Nome',
-              },
-            }}
-          />
-        )}
-      </div>
-    </div>
+      )}
+    </>
   );
 };

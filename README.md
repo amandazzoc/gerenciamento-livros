@@ -1,3 +1,4 @@
+![Banner](public/banner.jpg)
 # 📚 Gerenciamento de Livros e Autores
 
 Este projeto é uma aplicação de gerenciamento de livros e autores, construída com **React** e **TypeScript**. Ele utiliza componentes como `Dialog`, `Button`, e `Table` da biblioteca **@radix-ui/themes**, e implementa validação de formulários com **zod** e **react-hook-form**.
